@@ -1,0 +1,26 @@
+{
+  "name": "canvas-practice",
+  "version": "1.0.0",
+  "description": "exploring canvas API",
+  "main": "index.js",
+  "dependencies": {
+    "canvas-sketch": "^0.7.4",
+    "canvas-sketch-cli": "^1.11.14",
+    "canvas-sketch-util": "^1.10.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/spirited-hunger/canvas-practice.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/spirited-hunger/canvas-practice/issues"
+  },
+  "homepage": "https://github.com/spirited-hunger/canvas-practice#readme"
+}
