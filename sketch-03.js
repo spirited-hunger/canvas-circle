@@ -16,7 +16,7 @@ const randomRange = (min, max) => {
 
 const sketch = () => {
   return ({ context, width, height }) => {
-    context.fillStyle = 'whitesmoke';
+    context.fillStyle = 'white';
     context.fillRect(0, 0, width, height);
 
     const cx = width * 0.5;
