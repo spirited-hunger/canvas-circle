@@ -25,7 +25,7 @@ const sketch = () => {
       let piAngle = angle / 180 * Math.PI; 
       context.beginPath();
       
-      context.lineWidth = randomRange(0.2, 0.7);
+      context.lineWidth = randomRange(0.2, 0.5);
       context.strokeStyle = "black";
   
       context.moveTo(x, 0);
@@ -35,7 +35,7 @@ const sketch = () => {
       context.save();
 
       // angled rows
-      x *= 1.5;
+      x *= randomRange(1.49, 1.51);
 
       let startY = - x * Math.tan(piAngle);
       let endY = x / Math.tan(piAngle);
@@ -43,7 +43,7 @@ const sketch = () => {
       context.rotate(piAngle);
       context.beginPath();
       
-      context.lineWidth = randomRange(0.2, 0.7);
+      context.lineWidth = randomRange(0.2, 0.5);
       context.strokeStyle = "black";
   
       context.moveTo(x, startY);
@@ -54,6 +54,12 @@ const sketch = () => {
       context.restore();
     }
 
+    // square with shading
+
+    context.beginPath();
+    context.rect(width / 2 - 100, height / 2 - 100, 200, 200);
+    context.lineWidth = 3;
+    context.stroke();
 
 
 
