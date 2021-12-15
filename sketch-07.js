@@ -4,6 +4,8 @@ const settings = {
   dimensions: [ 1080, 1080 ]
 };
 
+let manager;
+
 let text = 'A';
 let fontSize = 1200;
 let fontFamily = 'times new roman';
@@ -16,10 +18,11 @@ const sketch = () => {
 
     context.fillStyle = "black";
     context.font = `${fontStyle} ${fontSize}px ${fontFamily}`;
+    // default is alphabetic
     context.textBaseline = 'top';
-    // context.textAlign = 'center';
+    // context.textAlign = 'center'; // default is left
 
-    // why do we do this? because just aligning baseline and textalign properties doesn't guarantee that you can have the text aligned around the gliph exactly where you want
+    // why do we do this? because just aligning baseline and textalign properties doesn't guarantee that you can have the text aligned around the glyph exactly where you want
     const metrics = context.measureText(text);
     // this reads current text in the argument
     console.log(metrics);
@@ -36,6 +39,10 @@ const sketch = () => {
     context.save();
     context.translate(x, y);
 
+    // ! to see the outline of the glyph
+    // context.rect(mx, my, mw, mh);
+    // context.stroke();
+
     context.beginPath();
     context.rect(mx, my, mw, mh);
     context.stroke();
@@ -46,10 +53,18 @@ const sketch = () => {
   };
 };
 
-// const onKeyUp = (e) => {
-//   console.log(e.key);
-// }
+const onKeyUp = (e) => {
+  text = e.key[0].toUpperCase();
+  manager.render(); // this renders the sketch again
+}
 
-// document.addEventListener('keyup', onKeyUp);
+document.addEventListener('keyup', onKeyUp);
+
+const start = async () => {
+  manager = await canvasSketch(sketch, settings);
+}
 
 // canvasSketch(sketch, settings);
+// this is an asynchronous function. and it returns a promise with something called sketchmanager. to control it we need to get manager instance
+
+start();
