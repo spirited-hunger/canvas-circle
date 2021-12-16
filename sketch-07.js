@@ -11,19 +11,34 @@ let fontSize = 1200;
 let fontFamily = 'times new roman';
 let fontStyle = 'normal'; // or normal
 
-const sketch = () => {
-  return ({ context, width, height }) => {
-    context.fillStyle = 'white';
-    context.fillRect(0, 0, width, height);
+// making an imaginary canvas tag to extract rgba values
+const typeCanvas = document.createElement('canvas');
+const typeContext = typeCanvas.getContext('2d');
 
-    context.fillStyle = "black";
-    context.font = `${fontStyle} ${fontSize}px ${fontFamily}`;
+const sketch = ({ context, width, height }) => {
+  const cell = 20;
+  const cols = Math.floor(width / cell);
+  const rows = Math.floor(height / cell);
+  const numCells = cols * rows;
+
+  typeCanvas.width = cols;
+  typeCanvas.height = rows;
+
+  // below will be read when rendered.
+  return ({ context, width, height }) => {
+    typeContext.fillStyle = 'black';
+    typeContext.fillRect(0, 0, width, height);
+
+    fontSize = cols;
+
+    typeContext.fillStyle = "white";
+    typeContext.font = `${fontStyle} ${fontSize}px ${fontFamily}`;
     // default is alphabetic
-    context.textBaseline = 'top';
-    // context.textAlign = 'center'; // default is left
+    typeContext.textBaseline = 'top';
+    // typeContext.textAlign = 'center'; // default is left
 
     // why do we do this? because just aligning baseline and textalign properties doesn't guarantee that you can have the text aligned around the glyph exactly where you want
-    const metrics = context.measureText(text);
+    const metrics = typeContext.measureText(text);
     // this reads current text in the argument
     console.log(metrics);
     // check the console to test
@@ -33,23 +48,57 @@ const sketch = () => {
     const mw = metrics.actualBoundingBoxLeft + metrics.actualBoundingBoxRight;
     const mh = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
 
-    const x = (width - mw) * 0.5 - mx;
-    const y = (height - mh) * 0.5 - my;
+    const tx = (cols - mw) * 0.5 - mx;
+    const ty = (rows - mh) * 0.5 - my;
 
-    context.save();
-    context.translate(x, y);
+    typeContext.save();
+    typeContext.translate(tx, ty);
 
     // ! to see the outline of the glyph
-    // context.rect(mx, my, mw, mh);
-    // context.stroke();
+    // typeContext.beginPath();
+    // typeContext.rect(mx, my, mw, mh);
+    // typeContext.stroke();
+    
+    typeContext.fillText(text, 0, 0);
+    
+    typeContext.restore();
 
-    context.beginPath();
-    context.rect(mx, my, mw, mh);
-    context.stroke();
-    
-    context.fillText(text, 0, 0);
-    
-    context.restore();
+    // now draw it on the actual canvas
+
+    // ! getImageData() to get all rgba values of all pixels of the typeContext
+    const typeData = typeContext.getImageData(0, 0, cols, rows).data;
+    // console.log(typeData);
+
+    for (let pixel = 0; pixel < numCells; pixel++) {
+      const col = pixel % cols;
+      const row = Math.floor(pixel / cols);
+      
+      const x = col * cell;
+      const y = row * cell;
+
+      const r = typeData[pixel * 4 + 0];
+      const g = typeData[pixel * 4 + 1];
+      const b = typeData[pixel * 4 + 2];
+      const a = typeData[pixel * 4 + 3];
+      
+      context.fillStyle = `rgb(${r}, ${g}, ${b})`;
+
+      context.save();
+      context.translate(x, y);
+      
+      // ? Rectangle pixels
+      context.fillRect(0, 0, cell, cell);
+
+      // ? Circle pixels
+      // context.translate(cell * 0.5, cell * 0.5);
+      // context.beginPath();
+      // context.arc(0, 0, cell * 0.5, 0, Math.PI * 2);
+      // context.fill();
+
+      context.restore();
+    }
+
+    // context.drawImage(typeCanvas, 0, 0);
   };
 };
 

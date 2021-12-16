@@ -2,7 +2,7 @@ const canvasSketch = require('canvas-sketch');
 
 const settings = {
   dimensions: [ 1080, 1080 ],
-  animate: true // if this is true, 60 frames per second the return function will be called
+  animate: true // if this is true, 60 frames per second the return function of sketch will be called
 };
 
 // beneath is what happens when animate : true
