@@ -1,4 +1,5 @@
 const canvasSketch = require('canvas-sketch');
+const random = require('canvas-sketch-util/random');
 
 const settings = {
   dimensions: [ 1080, 1080 ]
@@ -69,6 +70,13 @@ const sketch = ({ context, width, height }) => {
     const typeData = typeContext.getImageData(0, 0, cols, rows).data;
     // console.log(typeData);
 
+    // ? changing background
+    context.fillStyle = 'black';
+    context.fillRect(0, 0, width, height);
+
+    context.textBaseline = 'middle';
+    context.textAlign = 'center';
+
     for (let pixel = 0; pixel < numCells; pixel++) {
       const col = pixel % cols;
       const row = Math.floor(pixel / cols);
@@ -80,20 +88,29 @@ const sketch = ({ context, width, height }) => {
       const g = typeData[pixel * 4 + 1];
       const b = typeData[pixel * 4 + 2];
       const a = typeData[pixel * 4 + 3];
+
+      const glyph = getGlyph(r, text);
+
+      context.font = `${cell * 2}px ${fontFamily}`;
+      if (Math.random() < 0.1) context.font = `${cell * 6}px ${fontFamily}`
       
-      context.fillStyle = `rgb(${r}, ${g}, ${b})`;
+      // context.fillStyle = `rgb(${r}, ${g}, ${b})`;
+      context.fillStyle = `white`;
 
       context.save();
       context.translate(x, y);
       
       // ? Rectangle pixels
-      context.fillRect(0, 0, cell, cell);
+      // context.fillRect(0, 0, cell, cell);
 
       // ? Circle pixels
       // context.translate(cell * 0.5, cell * 0.5);
       // context.beginPath();
       // context.arc(0, 0, cell * 0.5, 0, Math.PI * 2);
       // context.fill();
+
+      // ? filling text
+      context.fillText(glyph, 0, 0);
 
       context.restore();
     }
@@ -105,6 +122,17 @@ const sketch = ({ context, width, height }) => {
 const onKeyUp = (e) => {
   text = e.key[0].toUpperCase();
   manager.render(); // this renders the sketch again
+}
+
+const getGlyph = (v, text) => {
+  if (v < 50) return '';
+  if (v < 100) return '.';
+  if (v < 150) return '-';
+  if (v < 200) return '+';
+
+  const glyphs = `_ =   / ${text}`.split('');
+
+  return random.pick(glyphs);
 }
 
 document.addEventListener('keyup', onKeyUp);
