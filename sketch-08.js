@@ -1,4 +1,4 @@
-// * RECTANGLE FILL
+// * GLYPH FILL
 
 const canvasSketch = require('canvas-sketch');
 const random = require('canvas-sketch-util/random');
@@ -19,7 +19,7 @@ const typeCanvas = document.createElement('canvas');
 const typeContext = typeCanvas.getContext('2d');
 
 const sketch = ({ context, width, height }) => {
-  const cell = 40;
+  const cell = 20;
   const cols = Math.floor(width / cell);
   const rows = Math.floor(height / cell);
   const numCells = cols * rows;
@@ -29,12 +29,12 @@ const sketch = ({ context, width, height }) => {
 
   // below will be read when rendered.
   return ({ context, width, height }) => {
-    typeContext.fillStyle = 'white';
+    typeContext.fillStyle = 'black';
     typeContext.fillRect(0, 0, width, height);
 
     fontSize = cols;
 
-    typeContext.fillStyle = "royalblue";
+    typeContext.fillStyle = "white";
     typeContext.font = `${fontStyle} ${fontSize}px ${fontFamily}`;
     // default is alphabetic
     typeContext.textBaseline = 'top';
@@ -91,24 +91,28 @@ const sketch = ({ context, width, height }) => {
       const b = typeData[pixel * 4 + 2];
       const a = typeData[pixel * 4 + 3];
 
+      const glyph = getGlyph(r, text);
 
       context.font = `${cell * 2}px ${fontFamily}`;
       if (Math.random() < 0.1) context.font = `${cell * 6}px ${fontFamily}`
       
-      context.fillStyle = `rgb(${r}, ${g}, ${b})`;
-      // context.fillStyle = `white`;
+      // context.fillStyle = `rgb(${r}, ${g}, ${b})`;
+      context.fillStyle = `white`;
 
       context.save();
       context.translate(x, y);
       
       // ? Rectangle pixels
-      context.fillRect(0, 0, cell, cell);
+      // context.fillRect(0, 0, cell, cell);
 
       // ? Circle pixels
       // context.translate(cell * 0.5, cell * 0.5);
       // context.beginPath();
       // context.arc(0, 0, cell * 0.5, 0, Math.PI * 2);
       // context.fill();
+
+      // ? filling text
+      context.fillText(glyph, 0, 0);
 
       context.restore();
     }
@@ -128,7 +132,7 @@ const getGlyph = (v, text) => {
   if (v < 150) return '-';
   if (v < 200) return '+';
 
-  const glyphs = `_ =   / ${text}`.split('');
+  const glyphs = `_= /${text.toLowerCase()}`.split('');
 
   return random.pick(glyphs);
 }
